@@ -1,12 +1,6 @@
 window.licker = window.licker || {};
 ((ns) => {
-  const SAMPLING_RATE = 8000;
-
-  const generator = [
-    [1, 1, 1],
-    [1, 0, 1],
-    [1, 1, 1]
-  ];
+  const SAMPLING_RATE = 8192;
 
   class Main {
     constructor(opts = {}) {
@@ -14,30 +8,54 @@ window.licker = window.licker || {};
     }
 
     initialize(opts) {
-      var canvasWrapper = document.querySelector('.canvas');
-      var canvasElm = canvasWrapper.querySelector('canvas');
+      this.canvasWrapper = document.querySelector('.canvas');
+      this.canvasElm = this.canvasWrapper.querySelector('canvas');
 
-      this.w = 243;
-      this.h = 243;
+      this.w = 256;
+      this.h = 256;
 
-      canvasElm.width = this.w;
-      canvasElm.height = this.h;
+      this.canvasElm.width = this.w;
+      this.canvasElm.height = this.h;
 
+      this.fractalAudio = new FractalAudio();
+
+      document.querySelectorAll('input.generator').forEach((elm) => {
+        elm.addEventListener('change', (evt) => {
+          this.updateCarpet({
+            generator: this.readTable(),
+          });
+        });
+      });
+    }
+
+    readTable() {
+      var arr = new Array();
+      var tblWidth = 4;
+      var tblHeight = 4;
+      var inputArr = document.querySelectorAll('input.generator');
+
+      for(let j = 0; j < tblHeight; j++) {
+        arr[j] = new Array();
+        for(let i = 0; i < tblWidth; i++) {
+          arr[j][i] = (inputArr[j * tblWidth + i].checked) ? 1 : 0;
+        }
+      }
+
+      return arr;
+    }
+
+    updateCarpet(opts = {}) {
       this.carpetFractal = new CarpetFractal({
-        canvasElm: canvasElm,
-        generator: generator,
+        canvasElm: this.canvasElm,
+        generator: opts.generator,
         func: (a, b) => {
-          return a + b;
+          return a & b;
         },
         w: this.w,
         h: this.h,
       });
 
-      this.fractalAudio = new FractalAudio({
-        arr: this.carpetFractal.carpet,
-      });
-
-      this.fractalAudio.play();
+      this.fractalAudio.play(this.carpetFractal.carpet);
     }
   }
 
@@ -97,7 +115,7 @@ window.licker = window.licker || {};
       let i = 0;
       for(let y = 0; y < this.h; y++) {
         for(let x = 0; x < this.w; x++) {
-          let v = 256 - 32 * this.carpet[y][x];
+          let v = 255 - 255 * this.carpet[y][x];
           imageData.data[i]     = v;
           imageData.data[i + 1] = v;
           imageData.data[i + 2] = v;
@@ -130,8 +148,8 @@ window.licker = window.licker || {};
     }
 
     generateCarpet() {
-      for(let y = 0; y < this.h - 5; y++) {
-        for(let x = 0; x < this.w - 5; x++) {
+      for(let y = 0; y < this.h; y++) {
+        for(let x = 0; x < this.w; x++) {
           this.carpet[y][x] = this.iterate(x, y);
         }
       }
@@ -164,8 +182,6 @@ window.licker = window.licker || {};
     initialize(opts = {}) {
       this.connected = false;
 
-      this.arr = opts.arr;
-
       window.AudioContext = window.AudioContext || window.webkitAudioContext;
       this.audioCtx = new AudioContext();
       this.sampleRate = this.audioCtx.sampleRate
@@ -192,7 +208,9 @@ window.licker = window.licker || {};
       }
     }
 
-    play(){
+    play(arr){
+      this.arr = arr;
+
       this.node.connect(this.audioCtx.destination);
     }
 
