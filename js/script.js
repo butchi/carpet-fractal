@@ -21,7 +21,7 @@ window.licker = window.licker || {};
       canvasElm.width = this.w;
       canvasElm.height = this.h;
 
-      this.carpet = new Carpet({
+      this.carpetFractal = new CarpetFractal({
         canvasElm: canvasElm,
         generator: generator,
         func: (a, b) => {
@@ -58,7 +58,7 @@ window.licker = window.licker || {};
     }
   }
 
-  class Carpet {
+  class CarpetFractal {
     constructor(opts = {}) {
       this.initialize(opts);
     }
@@ -84,10 +84,12 @@ window.licker = window.licker || {};
 
       this.initCarpet();
 
+      this.generateCarpet();
+
       let i = 0;
       for(let y = 0; y < this.h; y++) {
         for(let x = 0; x < this.w; x++) {
-          let v = 256 - 32 * this.iterate(x, y);
+          let v = 256 - 32 * this.carpet[y][x];
           imageData.data[i]     = v;
           imageData.data[i + 1] = v;
           imageData.data[i + 2] = v;
@@ -100,10 +102,31 @@ window.licker = window.licker || {};
     }
 
     initCarpet() {
+      // // method 1: failed
+      // this.carpet = (new Array(this.h)).fill((new Array(this.w)).fill(0));
+
+      // // method 2
+      // this.carpet = (new Array(this.h)).fill(0);
+      // this.carpet.forEach((_, i) => {
+      //   this.carpet[i] =  (new Array(this.w)).fill(0);
+      // });
+
+      // // method 3
+      // this.carpet = JSON.parse(JSON.stringify((new Array(this.h)).fill((new Array(this.w)).fill(0))));
+
+      // method 4
       this.carpet = new Array(this.h);
-      this.carpet.forEach((row) => {
-        row = new Array(this.w);
-      });
+      for(let y = 0; y < this.w; y++) {
+        this.carpet[y] = new Array(this.w).fill(0);
+      }
+    }
+
+    generateCarpet() {
+      for(let y = 0; y < this.h - 5; y++) {
+        for(let x = 0; x < this.w - 5; x++) {
+          this.carpet[y][x] = this.iterate(x, y);
+        }
+      }
     }
 
     iterate(x, y) {
