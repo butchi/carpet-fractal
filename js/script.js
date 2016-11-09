@@ -51,6 +51,10 @@ window.licker = window.licker || {};
         func: (a, b) => {
           return a & b;
         },
+        colorFunc: (v) => {
+          var tmp = 255 - 255 * v;
+          return [tmp, tmp, tmp];
+        },
         w: this.w,
         h: this.h,
       });
@@ -101,6 +105,11 @@ window.licker = window.licker || {};
         return a && b;
       });
 
+      this.colorFunc = opts.colorFunc || ((v) => {
+        var tmp = 255 - 255 * v;
+        return [tmp, tmp, tmp];
+      });
+
       this.w = opts.w;
       this.h = opts.h;
 
@@ -116,10 +125,10 @@ window.licker = window.licker || {};
       let i = 0;
       for(let y = 0; y < this.h; y++) {
         for(let x = 0; x < this.w; x++) {
-          let v = 255 - 255 * this.carpet[y][x];
-          imageData.data[i]     = v;
-          imageData.data[i + 1] = v;
-          imageData.data[i + 2] = v;
+          let rgbArr = this.colorFunc(this.carpet[y][x]);
+          imageData.data[i]     = rgbArr[0];
+          imageData.data[i + 1] = rgbArr[1];
+          imageData.data[i + 2] = rgbArr[2];
           imageData.data[i + 3] = 255;
           i += 4;
         }
