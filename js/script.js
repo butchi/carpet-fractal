@@ -1,5 +1,7 @@
 window.licker = window.licker || {};
 ((ns) => {
+  const SAMPLING_RATE = 8000;
+
   const generator = [
     [1, 1, 1],
     [1, 0, 1],
@@ -160,35 +162,42 @@ window.licker = window.licker || {};
     }
 
     initialize(opts = {}) {
+      this.connected = false;
+
       this.arr = opts.arr;
+
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      this.audioCtx = new AudioContext();
+      this.sampleRate = this.audioCtx.sampleRate
+      this.node = this.audioCtx.createScriptProcessor(1024, 1, 1);
+
+      this.t = 0;
+
+      this.node.addEventListener('audioprocess', (evt) => {
+        this.process(evt);
+      });
     }
 
-    play(){
+    process(evt) {
       var h = this.arr.length;
       var w = this.arr[0].length;
 
-      var SAMPLING_RATE = 8192;
-      var DURATION = (w * h) / SAMPLING_RATE;
+      var data = evt.outputBuffer.getChannelData(0);
 
-      window.AudioContext = window.AudioContext || window.webkitAudioContext;
-      var audioCtx = new AudioContext();
+      for (var i = 0; i < data.length; ++i) {
+        let t = Math.floor(this.t * SAMPLING_RATE / this.sampleRate) % (w * h);
+        data[i] = this.arr[Math.floor(t / w)][t % w];
 
-      var t, v;
-
-      var src = audioCtx.createBufferSource();
-      src.connect(audioCtx.destination);
-
-      audioCtx.samplingRate = SAMPLING_RATE;
-
-      var buffer = audioCtx.createBuffer(1, DURATION * SAMPLING_RATE, SAMPLING_RATE);
-      var channel = buffer.getChannelData(0);
-
-      for(t = 0; t < channel.length; t++){
-        channel[t] = this.arr[Math.floor(t / w)][t % w];
+        this.t++;
       }
+    }
 
-      src.buffer = buffer;
-      src.start(0);
+    play(){
+      this.node.connect(this.audioCtx.destination);
+    }
+
+    pause() {
+      this.node.disconnect();
     }
   }
 
