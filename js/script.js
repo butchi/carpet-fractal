@@ -1,6 +1,6 @@
 window.licker = window.licker || {};
 ((ns) => {
-  const SAMPLING_RATE = 8192;
+  const SAMPLING_RATE = 8000;
 
   class Main {
     constructor(opts = {}) {
@@ -55,6 +55,7 @@ window.licker = window.licker || {};
         h: this.h,
       });
 
+      this.fractalAudio.pause();
       this.fractalAudio.play(this.carpetFractal.carpet);
     }
   }
