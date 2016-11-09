@@ -30,6 +30,12 @@ window.licker = window.licker || {};
         w: this.w,
         h: this.h,
       });
+
+      this.fractalAudio = new FractalAudio({
+        arr: this.carpetFractal.carpet,
+      });
+
+      this.fractalAudio.play();
     }
   }
 
@@ -144,6 +150,45 @@ window.licker = window.licker || {};
       }
 
       return tmp;
+    }
+  }
+
+  // from http://jsdo.it/butchi/carpet_fractal_music
+  class FractalAudio {
+    constructor(opts = {}) {
+      this.initialize(opts);
+    }
+
+    initialize(opts = {}) {
+      this.arr = opts.arr;
+    }
+
+    play(){
+      var h = this.arr.length;
+      var w = this.arr[0].length;
+
+      var SAMPLING_RATE = 8192;
+      var DURATION = (w * h) / SAMPLING_RATE;
+
+      window.AudioContext = window.AudioContext || window.webkitAudioContext;
+      var audioCtx = new AudioContext();
+
+      var t, v;
+
+      var src = audioCtx.createBufferSource();
+      src.connect(audioCtx.destination);
+
+      audioCtx.samplingRate = SAMPLING_RATE;
+
+      var buffer = audioCtx.createBuffer(1, DURATION * SAMPLING_RATE, SAMPLING_RATE);
+      var channel = buffer.getChannelData(0);
+
+      for(t = 0; t < channel.length; t++){
+        channel[t] = this.arr[Math.floor(t / w)][t % w];
+      }
+
+      src.buffer = buffer;
+      src.start(0);
     }
   }
 
