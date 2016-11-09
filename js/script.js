@@ -138,19 +138,6 @@ window.licker = window.licker || {};
     }
 
     initCarpet() {
-      // // method 1: failed
-      // this.carpet = (new Array(this.h)).fill((new Array(this.w)).fill(0));
-
-      // // method 2
-      // this.carpet = (new Array(this.h)).fill(0);
-      // this.carpet.forEach((_, i) => {
-      //   this.carpet[i] =  (new Array(this.w)).fill(0);
-      // });
-
-      // // method 3
-      // this.carpet = JSON.parse(JSON.stringify((new Array(this.h)).fill((new Array(this.w)).fill(0))));
-
-      // method 4
       this.carpet = new Array(this.h);
       for(let y = 0; y < this.w; y++) {
         this.carpet[y] = new Array(this.w).fill(0);
