@@ -1,4 +1,12 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var SAMPLING_RATE = exports.SAMPLING_RATE = 8000;
+
+},{}],2:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44,7 +52,7 @@ var Main = function () {
 
 exports.default = Main;
 
-},{"./Router":2}],2:[function(require,module,exports){
+},{"./Router":3}],3:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -94,7 +102,7 @@ var Router = function () {
 
 exports.default = Router;
 
-},{"../page/Common":5,"../page/Index":6,"./ns":4}],3:[function(require,module,exports){
+},{"../page/Common":9,"../page/Index":10,"./ns":7}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -103,127 +111,13 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
+var _table = require('./table');
+
+var _table2 = _interopRequireDefault(_table);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var SAMPLING_RATE = 8000;
-
-var IndexMain = function () {
-  function IndexMain() {
-    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, IndexMain);
-
-    this.initialize(opts);
-  }
-
-  _createClass(IndexMain, [{
-    key: 'initialize',
-    value: function initialize(opts) {
-      var _this = this;
-
-      this.canvasWrapper = document.querySelector('.canvas');
-      this.canvasElm = this.canvasWrapper.querySelector('canvas');
-
-      this.w = 256;
-      this.h = 256;
-
-      this.canvasElm.width = this.w;
-      this.canvasElm.height = this.h;
-
-      this.fractalAudio = new FractalAudio();
-
-      document.querySelectorAll('input.generator').forEach(function (elm) {
-        elm.addEventListener('change', function (evt) {
-          _this.updateCarpet({
-            generator: _this.readTable()
-          });
-        });
-      });
-    }
-  }, {
-    key: 'readTable',
-    value: function readTable() {
-      var arr = new Array();
-      var tblWidth = 4;
-      var tblHeight = 4;
-      var inputArr = document.querySelectorAll('input.generator');
-
-      for (var j = 0; j < tblHeight; j++) {
-        arr[j] = new Array();
-        for (var i = 0; i < tblWidth; i++) {
-          arr[j][i] = inputArr[j * tblWidth + i].checked ? 1 : 0;
-        }
-      }
-
-      return arr;
-    }
-  }, {
-    key: 'updateCarpet',
-    value: function updateCarpet() {
-      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      this.carpetFractal = new CarpetFractal({
-        canvasElm: this.canvasElm,
-        generator: opts.generator,
-        func: function func(a, b) {
-          return a & b;
-        },
-        colorFunc: function colorFunc(v) {
-          var tmp = 255 - 255 * v;
-          return [tmp, tmp, tmp];
-        },
-        w: this.w,
-        h: this.h
-      });
-
-      this.fractalAudio.pause();
-      this.fractalAudio.play(this.carpetFractal.carpet);
-    }
-  }]);
-
-  return IndexMain;
-}();
-
-exports.default = IndexMain;
-
-var Table = function () {
-  function Table() {
-    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-    _classCallCheck(this, Table);
-
-    this.initialize(opts);
-  }
-
-  _createClass(Table, [{
-    key: 'initialize',
-    value: function initialize() {
-      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      this.arr = opts.arr || [[0]];
-
-      this.w = this.arr.length;
-      this.h = this.arr[0].length;
-    }
-  }, {
-    key: 'getElm',
-    value: function getElm() {
-      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
-
-      var ret;
-      var scaleX = opts.scaleX || 1;
-      var scaleY = opts.scaleY || 1;
-      var x = opts.x || 0;
-      var y = opts.y || 0;
-
-      ret = this.arr[Math.floor(y / scaleY % this.h)][Math.floor(x / scaleX % this.w)];
-
-      return ret;
-    }
-  }]);
-
-  return Table;
-}();
 
 var CarpetFractal = function () {
   function CarpetFractal() {
@@ -241,7 +135,7 @@ var CarpetFractal = function () {
 
       var canvasElm = opts.canvasElm;
 
-      this.generator = new Table({
+      this.generator = new _table2.default({
         arr: opts.generator
       });
 
@@ -320,9 +214,26 @@ var CarpetFractal = function () {
   return CarpetFractal;
 }();
 
+exports.default = CarpetFractal;
+
+},{"./table":8}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _config = require('../config');
+
+var Settings = _interopRequireWildcard(_config);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
 // from http://jsdo.it/butchi/carpet_fractal_music
-
-
 var FractalAudio = function () {
   function FractalAudio() {
     var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
@@ -335,7 +246,7 @@ var FractalAudio = function () {
   _createClass(FractalAudio, [{
     key: 'initialize',
     value: function initialize() {
-      var _this2 = this;
+      var _this = this;
 
       var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
 
@@ -349,7 +260,7 @@ var FractalAudio = function () {
       this.t = 0;
 
       this.node.addEventListener('audioprocess', function (evt) {
-        _this2.process(evt);
+        _this.process(evt);
       });
     }
   }, {
@@ -361,7 +272,7 @@ var FractalAudio = function () {
       var data = evt.outputBuffer.getChannelData(0);
 
       for (var i = 0; i < data.length; ++i) {
-        var t = Math.floor(this.t * SAMPLING_RATE / this.sampleRate) % (w * h);
+        var t = Math.floor(this.t * Settings.SAMPLING_RATE / this.sampleRate) % (w * h);
         data[i] = this.arr[Math.floor(t / w)][t % w];
 
         this.t++;
@@ -384,7 +295,109 @@ var FractalAudio = function () {
   return FractalAudio;
 }();
 
-},{}],4:[function(require,module,exports){
+exports.default = FractalAudio;
+
+},{"../config":1}],6:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _carpetFractal = require('./carpet-fractal');
+
+var _carpetFractal2 = _interopRequireDefault(_carpetFractal);
+
+var _fractalAudio = require('./fractal-audio');
+
+var _fractalAudio2 = _interopRequireDefault(_fractalAudio);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var IndexMain = function () {
+  function IndexMain() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, IndexMain);
+
+    this.initialize(opts);
+  }
+
+  _createClass(IndexMain, [{
+    key: 'initialize',
+    value: function initialize(opts) {
+      var _this = this;
+
+      this.canvasWrapper = document.querySelector('.canvas');
+      this.canvasElm = this.canvasWrapper.querySelector('canvas');
+
+      this.w = 256;
+      this.h = 256;
+
+      this.canvasElm.width = this.w;
+      this.canvasElm.height = this.h;
+
+      this.fractalAudio = new _fractalAudio2.default();
+
+      document.querySelectorAll('input.generator').forEach(function (elm) {
+        elm.addEventListener('change', function (evt) {
+          _this.updateCarpet({
+            generator: _this.readTable()
+          });
+        });
+      });
+    }
+  }, {
+    key: 'readTable',
+    value: function readTable() {
+      var arr = new Array();
+      var tblWidth = 4;
+      var tblHeight = 4;
+      var inputArr = document.querySelectorAll('input.generator');
+
+      for (var j = 0; j < tblHeight; j++) {
+        arr[j] = new Array();
+        for (var i = 0; i < tblWidth; i++) {
+          arr[j][i] = inputArr[j * tblWidth + i].checked ? 1 : 0;
+        }
+      }
+
+      return arr;
+    }
+  }, {
+    key: 'updateCarpet',
+    value: function updateCarpet() {
+      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this.carpetFractal = new _carpetFractal2.default({
+        canvasElm: this.canvasElm,
+        generator: opts.generator,
+        func: function func(a, b) {
+          return a & b;
+        },
+        colorFunc: function colorFunc(v) {
+          var tmp = 255 - 255 * v;
+          return [tmp, tmp, tmp];
+        },
+        w: this.w,
+        h: this.h
+      });
+
+      this.fractalAudio.pause();
+      this.fractalAudio.play(this.carpetFractal.carpet);
+    }
+  }]);
+
+  return IndexMain;
+}();
+
+exports.default = IndexMain;
+
+},{"./carpet-fractal":4,"./fractal-audio":5}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -399,7 +412,59 @@ window.App = window.App || {};
 var ns = window.App;
 exports.default = ns;
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Table = function () {
+  function Table() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, Table);
+
+    this.initialize(opts);
+  }
+
+  _createClass(Table, [{
+    key: "initialize",
+    value: function initialize() {
+      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      this.arr = opts.arr || [[0]];
+
+      this.w = this.arr.length;
+      this.h = this.arr[0].length;
+    }
+  }, {
+    key: "getElm",
+    value: function getElm() {
+      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var ret;
+      var scaleX = opts.scaleX || 1;
+      var scaleY = opts.scaleY || 1;
+      var x = opts.x || 0;
+      var y = opts.y || 0;
+
+      ret = this.arr[Math.floor(y / scaleY % this.h)][Math.floor(x / scaleX % this.w)];
+
+      return ret;
+    }
+  }]);
+
+  return Table;
+}();
+
+exports.default = Table;
+
+},{}],9:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -458,7 +523,7 @@ var Common = function () {
 
 exports.default = Common;
 
-},{"../module/ns":4}],6:[function(require,module,exports){
+},{"../module/ns":7}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -502,7 +567,7 @@ var Index = function () {
 
 exports.default = Index;
 
-},{"../module/index-main":3,"../module/ns":4}],7:[function(require,module,exports){
+},{"../module/index-main":6,"../module/ns":7}],11:[function(require,module,exports){
 'use strict';
 
 var _ns = require('./module/ns');
@@ -519,4 +584,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _ns2.default.main = new _Main2.default();
 
-},{"./module/Main":1,"./module/ns":4}]},{},[7]);
+},{"./module/Main":2,"./module/ns":7}]},{},[11]);
