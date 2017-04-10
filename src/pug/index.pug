@@ -1,0 +1,40 @@
+extends /_layout/_default-layout
+
+append ConfigBlock
+  - pageId = 'index'
+
+//- append StylesheetBlock
+
+//- append JavascriptBlock
+
+block ContentBlock
+  header
+    h1
+      | Index Page
+
+  main
+    .canvas
+      canvas
+
+    .edit-panel
+      table.edit-table
+        tr
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+        tr
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+        tr
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+        tr
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
+          td: input.generator(type="checkbox")
