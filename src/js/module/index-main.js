@@ -1,5 +1,6 @@
 import CarpetFractal from './carpet-fractal';
 import FractalAudio from './fractal-audio';
+import CfmEditTable from './cfm-edit-table';
 
 export default class IndexMain {
   constructor(opts = {}) {
@@ -18,29 +19,17 @@ export default class IndexMain {
 
     this.fractalAudio = new FractalAudio();
 
-    document.querySelectorAll('input.generator').forEach((elm) => {
-      elm.addEventListener('change', (evt) => {
-        this.updateCarpet({
-          generator: this.readTable(),
-        });
+    let cfmEditTable = this.cfmEditTable = new CfmEditTable({
+      elm: document.querySelector('.cfm-edit-table'),
+    });
+
+    $(cfmEditTable.elm).on('table-change', (evt, opts = {}) => {
+      let generator = opts.generator;
+
+      this.updateCarpet({
+        generator,
       });
     });
-  }
-
-  readTable() {
-    var arr = new Array();
-    var tblWidth = 4;
-    var tblHeight = 4;
-    var inputArr = document.querySelectorAll('input.generator');
-
-    for(let j = 0; j < tblHeight; j++) {
-      arr[j] = new Array();
-      for(let i = 0; i < tblWidth; i++) {
-        arr[j][i] = (inputArr[j * tblWidth + i].checked) ? 1 : 0;
-      }
-    }
-
-    return arr;
   }
 
   updateCarpet(opts = {}) {

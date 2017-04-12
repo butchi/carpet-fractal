@@ -102,7 +102,7 @@ var Router = function () {
 
 exports.default = Router;
 
-},{"../page/Common":9,"../page/Index":10,"./ns":7}],4:[function(require,module,exports){
+},{"../page/Common":10,"../page/Index":11,"./ns":8}],4:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -216,7 +216,66 @@ var CarpetFractal = function () {
 
 exports.default = CarpetFractal;
 
-},{"./table":8}],5:[function(require,module,exports){
+},{"./table":9}],5:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var CfmEditTable = function () {
+  function CfmEditTable() {
+    var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+    _classCallCheck(this, CfmEditTable);
+
+    this.initialize(opts);
+  }
+
+  _createClass(CfmEditTable, [{
+    key: 'initialize',
+    value: function initialize() {
+      var _this = this;
+
+      var opts = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : {};
+
+      var elm = this.elm = opts.elm;
+
+      $(elm).on('change', '[data-js-class="generator"]', function (evt) {
+        $(elm).trigger('table-change', {
+          generator: _this.readTable()
+        });
+      });
+    }
+  }, {
+    key: 'readTable',
+    value: function readTable() {
+      var arr = new Array();
+      var tblWidth = 4;
+      var tblHeight = 4;
+      var inputArr = this.elm.querySelectorAll('[data-js-class="generator"]');
+
+      for (var j = 0; j < tblHeight; j++) {
+        arr[j] = new Array();
+        for (var i = 0; i < tblWidth; i++) {
+          arr[j][i] = inputArr[j * tblWidth + i].checked ? 1 : 0;
+        }
+      }
+
+      return arr;
+    }
+  }]);
+
+  return CfmEditTable;
+}();
+
+exports.default = CfmEditTable;
+
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -297,7 +356,7 @@ var FractalAudio = function () {
 
 exports.default = FractalAudio;
 
-},{"../config":1}],6:[function(require,module,exports){
+},{"../config":1}],7:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -313,6 +372,10 @@ var _carpetFractal2 = _interopRequireDefault(_carpetFractal);
 var _fractalAudio = require('./fractal-audio');
 
 var _fractalAudio2 = _interopRequireDefault(_fractalAudio);
+
+var _cfmEditTable = require('./cfm-edit-table');
+
+var _cfmEditTable2 = _interopRequireDefault(_cfmEditTable);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -343,30 +406,19 @@ var IndexMain = function () {
 
       this.fractalAudio = new _fractalAudio2.default();
 
-      document.querySelectorAll('input.generator').forEach(function (elm) {
-        elm.addEventListener('change', function (evt) {
-          _this.updateCarpet({
-            generator: _this.readTable()
-          });
+      var cfmEditTable = this.cfmEditTable = new _cfmEditTable2.default({
+        elm: document.querySelector('.cfm-edit-table')
+      });
+
+      $(cfmEditTable.elm).on('table-change', function (evt) {
+        var opts = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : {};
+
+        var generator = opts.generator;
+
+        _this.updateCarpet({
+          generator: generator
         });
       });
-    }
-  }, {
-    key: 'readTable',
-    value: function readTable() {
-      var arr = new Array();
-      var tblWidth = 4;
-      var tblHeight = 4;
-      var inputArr = document.querySelectorAll('input.generator');
-
-      for (var j = 0; j < tblHeight; j++) {
-        arr[j] = new Array();
-        for (var i = 0; i < tblWidth; i++) {
-          arr[j][i] = inputArr[j * tblWidth + i].checked ? 1 : 0;
-        }
-      }
-
-      return arr;
     }
   }, {
     key: 'updateCarpet',
@@ -397,7 +449,7 @@ var IndexMain = function () {
 
 exports.default = IndexMain;
 
-},{"./carpet-fractal":4,"./fractal-audio":5}],7:[function(require,module,exports){
+},{"./carpet-fractal":4,"./cfm-edit-table":5,"./fractal-audio":6}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -412,7 +464,7 @@ window.App = window.App || {};
 var ns = window.App;
 exports.default = ns;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -464,7 +516,7 @@ var Table = function () {
 
 exports.default = Table;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -523,7 +575,7 @@ var Common = function () {
 
 exports.default = Common;
 
-},{"../module/ns":7}],10:[function(require,module,exports){
+},{"../module/ns":8}],11:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -567,7 +619,7 @@ var Index = function () {
 
 exports.default = Index;
 
-},{"../module/index-main":6,"../module/ns":7}],11:[function(require,module,exports){
+},{"../module/index-main":7,"../module/ns":8}],12:[function(require,module,exports){
 'use strict';
 
 var _ns = require('./module/ns');
@@ -584,4 +636,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _ns2.default.main = new _Main2.default();
 
-},{"./module/Main":2,"./module/ns":7}]},{},[11]);
+},{"./module/Main":2,"./module/ns":8}]},{},[12]);

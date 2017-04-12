@@ -47,6 +47,14 @@ table {
 	border-collapse: collapse;
 	border-spacing: 0;
 }
+.cfm-edit-panel {
+  clear: both;
+  float: left; }
+
+.cfm-edit-table td {
+  width: 25px;
+  height: 25px; }
+
 .display-none {
   display: none; }
 
@@ -107,15 +115,3 @@ html.is-pc .wrapper {
   min-width: 1200px;
   min-width: 12rem;
   overflow: hidden; }
-
-.edit-panel {
-  clear: both;
-  float: left; }
-
-.edit-table td {
-  width: 25px;
-  height: 25px; }
-
-.player-panel {
-  float: left;
-  margin: 0 0 0 20px; }
