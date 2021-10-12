@@ -11,8 +11,8 @@ export default class IndexMain {
     this.canvasWrapper = document.querySelector('.canvas');
     this.canvasElm = this.canvasWrapper.querySelector('canvas');
 
-    this.w = 256;
-    this.h = 256;
+    this.w = 243;
+    this.h = 243;
 
     this.canvasElm.width = this.w;
     this.canvasElm.height = this.h;
@@ -21,6 +21,8 @@ export default class IndexMain {
 
     let cfmEditTable = this.cfmEditTable = new CfmEditTable({
       elm: document.querySelector('.cfm-edit-table'),
+      w: 3,
+      h: 3,
     });
 
     $(cfmEditTable.elm).on('table-change', (evt, opts = {}) => {
