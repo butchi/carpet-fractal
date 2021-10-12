@@ -1,63 +1,69 @@
-web-starter
-====
+# carpet-fractal
 
-## はじめに
-本スターターキットは kayac-html5-starter から派生しています。
+## Build Setup
 
-## 事前に用意するもの
-- node.js (version 6.9.1以上)
+```bash
+# install dependencies
+$ yarn install
 
-## 環境構築
+# serve with hot reload at localhost:3000
+$ yarn dev
+
+# build for production and launch server
+$ yarn build
+$ yarn start
+
+# generate static project
+$ yarn generate
 ```
-# 開発に使うnpmパッケージをインストール
-yarn
 
-# または
-npm install
-```
+For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
-## ファイル構成
+## Special Directories
 
-- `README.md`
-  - このファイルです。
-- `package.json`
-  - 依存するnpmパッケージに関する設定ファイルです。
-- `gulpfile.babel.js`
-  - gulpタスクに関する設定ファイルです。（`.babel.js`となっているのは、es2015で書くための印です）
-- `docs`
-  - Web公開されるファイルの置き場所です。
-- `src/scss`, `src/js`, `src/pug`, `src/config`
-  - ビルドに必要な各種ソースコードです。
+You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
 
-## 開発手順
+### `assets`
 
-開発時に必要なタスクは、npm scriptおよびgulp.jsで管理されています。
-shellから以下のコマンドを実行することで、各種ビルド・タスク実行が可能です。
+The assets directory contains your uncompiled assets such as Stylus or Sass files, images, or fonts.
 
-- `npm start`
-  - すべてのソースコードをビルドし、開発用ブラウザを立ち上げ、その後ソースコードに修正があれば自動ビルド・自動ブラウザ更新します
-  - 基本的には、このコマンドを実行しておくだけで開発が可能なはずです。
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/assets).
 
-## 使用言語
+### `components`
 
-- HTMLテンプレート: [pug](http://jade-lang.com/)
-- CSSメタ言語: [Sass(scss)](http://sass-lang.com/)
-- Javascript: [ES2015(ECMAScript 6)](https://babeljs.io/docs/learn-es2015/)
+The components directory contains your Vue.js components. Components make up the different parts of your page and can be reused and imported into your pages, layouts and even other components.
 
-## 対応ブラウザ
-- 各種モダンブラウザ最新バージョン・IE10以上
-  - 対応ブラウザを変更する場合、`src/config/pleeease.json`の`autoprefixer.browsers`を修正することをお忘れなく
-  - またIE8に対応する場合は、jQueryを1系にすることもお忘れなく
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/components).
 
-## 依存ライブラリ
+### `layouts`
 
-`npm install`でインストールされるライブラリ（一部）です。
-全てを理解していなくても、開発は問題なく行えますが、挙動に問題がある場合・カスタマイズしたい場合などに参照してみてください。
+Layouts are a great help when you want to change the look and feel of your Nuxt app, whether you want to include a sidebar or have distinct layouts for mobile and desktop.
 
-- [gulp.js](http://gulpjs.com/)
-- [Babel](https://babeljs.io/)
-- [browserify](http://browserify.org/)
-- [pleeease](http://pleeease.io/)
-- [browser-sync](https://www.browsersync.io/)
-- [jQuery](https://jquery.com/)
-- [Reset CSS](http://meyerweb.com/eric/tools/css/reset/)
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/layouts).
+
+
+### `pages`
+
+This directory contains your application views and routes. Nuxt will read all the `*.vue` files inside this directory and setup Vue Router automatically.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/get-started/routing).
+
+### `plugins`
+
+The plugins directory contains JavaScript plugins that you want to run before instantiating the root Vue.js Application. This is the place to add Vue plugins and to inject functions or constants. Every time you need to use `Vue.use()`, you should create a file in `plugins/` and add its path to plugins in `nuxt.config.js`.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/plugins).
+
+### `static`
+
+This directory contains your static files. Each file inside this directory is mapped to `/`.
+
+Example: `/static/robots.txt` is mapped as `/robots.txt`.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/static).
+
+### `store`
+
+This directory contains your Vuex store files. Creating a file in this directory automatically activates Vuex.
+
+More information about the usage of this directory in [the documentation](https://nuxtjs.org/docs/2.x/directory-structure/store).
