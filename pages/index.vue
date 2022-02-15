@@ -1,77 +1,91 @@
-<template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+<template lang="pug">
+div
+  canvas(ref="canvas", style="height:512px;")
 </template>
+
+<script>
+import CarpetFractal from '../components/carpet-fractal';
+// import CfmEditTable from '../components/cfm-edit-table';
+
+export default {
+  mounted () {
+    const canvasElm = this.$refs.canvas
+
+    const w = 4 ** 5
+    const h = 4 ** 5
+
+    const generator = [
+      [1, 1, 1, 1],
+      [1, 0, 0, 1],
+      [1, 0, 0, 1],
+      [1, 1, 1, 1]
+    ]
+
+    const func = (a, b) => {
+      return a && b
+    }
+
+    const colorFunc = (v) => {
+      const tmp = 255 - 255 * v
+      return [tmp, tmp, tmp]
+    }
+
+    canvasElm.width = w
+    canvasElm.height = h
+
+    const carpetFractal = new CarpetFractal({
+      canvasElm,
+      generator,
+      func,
+      colorFunc,
+      w,
+      h,
+    })
+
+    canvasElm.addEventListener('click', (_evt) => {
+      const carpet = carpetFractal.carpet
+
+      const h = carpet.length
+      const w = carpet[0].length
+
+      const sampleRate = 8000
+
+      // [AudioBuffer - Web API | MDN](https://developer.mozilla.org/ja/docs/Web/API/AudioBuffer)
+
+      const audioCtx = new (window.AudioContext || window.webkitAudioContext)({ sampleRate });
+
+      // ステレオ
+      const channelArr = 2
+
+      // AudioContextのサンプルレートで2秒間の空のステレオバッファを生成する
+      // const frameCount = audioCtx.sampleRate * 2.0
+      const frameCount = w * h
+
+      const myArrayBuffer = audioCtx.createBuffer(2, frameCount, audioCtx.sampleRate)
+
+      let t = 0
+
+      // 実際のデータの配列を得る
+      for (let i = 0; i < frameCount; i++) {
+        for (let channel = 0; channel < channelArr; channel++) {
+          const nowBuffering = myArrayBuffer.getChannelData(channel)
+
+          nowBuffering[i] = carpet[Math.floor(t / w)][t % w]
+        }
+
+        t = (t + 1) % (w * h)
+      }
+
+      // AudioBufferSourceNodeを得る
+      // これはAudioBufferを再生するときに使うAudioNodeである
+      const source = audioCtx.createBufferSource()
+      // AudioBufferSourceNodeにバッファを設定する
+      source.buffer = myArrayBuffer
+      // AudioBufferSourceNodeを出力先に接続すると音声が聞こえるようになる
+      source.connect(audioCtx.destination)
+      // 音源の再生を始める
+      source.start()
+    })
+  }
+}
+</script>
