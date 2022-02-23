@@ -1,9 +1,9 @@
 export default class CfmEditTable {
-  constructor (optLi = {}) {
+  constructor(optLi = {}) {
     this.initialize(optLi)
   }
 
-  initialize (optLi) {
+  initialize(optLi) {
     const elm = this.elm = optLi.elm
 
     this.w = this.w = optLi.w || 2
@@ -18,7 +18,7 @@ export default class CfmEditTable {
     })
   }
 
-  updateTable (_optLi = {}) {
+  updateTable(_optLi = {}) {
     const w = this.w
     const h = this.h
 
@@ -42,7 +42,7 @@ export default class CfmEditTable {
     }
   }
 
-  readTable () {
+  readTable() {
     const arr = []
     const tblWidth = this.w
     const tblHeight = this.h

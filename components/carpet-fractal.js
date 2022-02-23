@@ -1,11 +1,11 @@
 import Table from './table'
 
 export default class CarpetFractal {
-  constructor (optLi = {}) {
+  constructor(optLi = {}) {
     this.initialize(optLi)
   }
 
-  initialize (optLi) {
+  initialize(optLi) {
     const canvasElm = optLi.canvasElm
 
     this.generator = new Table({
@@ -48,14 +48,14 @@ export default class CarpetFractal {
     ctx.putImageData(imageData, 0, 0)
   }
 
-  initCarpet () {
+  initCarpet() {
     this.carpet = new Array(this.h)
     for (let y = 0; y < this.w; y++) {
       this.carpet[y] = new Array(this.w).fill(0)
     }
   }
 
-  generateCarpet () {
+  generateCarpet() {
     for (let y = 0; y < this.h; y++) {
       for (let x = 0; x < this.w; x++) {
         this.carpet[y][x] = this.iterate(x, y)
@@ -63,7 +63,7 @@ export default class CarpetFractal {
     }
   }
 
-  iterate (x, y) {
+  iterate(x, y) {
     let tmp = 1
 
     for (let i = 0; i < this.iterateNum; i++) {

@@ -1,16 +1,16 @@
 export default class Table {
-  constructor (optLi = {}) {
+  constructor(optLi = {}) {
     this.initialize(optLi)
   }
 
-  initialize (optLi) {
+  initialize(optLi) {
     this.arr = optLi.arr || [[0]]
 
     this.w = this.arr.length
     this.h = this.arr[0].length
   }
 
-  getElm (optLi) {
+  getElm(optLi) {
     const scaleX = optLi.scaleX || 1
     const scaleY = optLi.scaleY || 1
     const x = optLi.x || 0
