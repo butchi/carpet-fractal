@@ -1,15 +1,20 @@
 <template lang="pug">
 div
   canvas(ref="canvas", style="height: 512px")
+  canvas(ref="stage", style="height: 512px", width=512, height=512)
+  video(ref="video", style="height: 512px", width=512, height=512)
 </template>
 
 <script>
 import CarpetFractal from "../components/carpet-fractal";
+import AnalyticSignal from "../components/analytic-signal";
 // import CfmEditTable from '../components/cfm-edit-table';
 
 export default {
   mounted() {
     const canvasElm = this.$refs.canvas;
+    const stageElm = this.$refs.stage;
+    const videoElm = this.$refs.video;
 
     const w = 4 ** 5;
     const h = 4 ** 5;
@@ -52,7 +57,8 @@ export default {
 
       // [AudioBuffer - Web API | MDN](https://developer.mozilla.org/ja/docs/Web/API/AudioBuffer)
 
-      const audioCtx = new (window.AudioContext || window.webkitAudioContext)({
+      const audioCtx = new (globalThis.AudioContext ||
+        globalThis.webkitAudioContext)({
         sampleRate,
       });
 
@@ -70,6 +76,7 @@ export default {
       );
 
       let t = 0;
+      let cnt = 0;
 
       // 実際のデータの配列を得る
       for (let i = 0; i < frameCount; i++) {
@@ -89,8 +96,43 @@ export default {
       source.buffer = myArrayBuffer;
       // AudioBufferSourceNodeを出力先に接続すると音声が聞こえるようになる
       source.connect(audioCtx.destination);
+
+      const analyser = audioCtx.createAnalyser(); // AnalyserNodeを作成
+
+      const frequencyData = new Float32Array(analyser.frequencyBinCount);
+      const timeDomainData = new Float32Array(analyser.frequencyBinCount);
+
+      source.connect(analyser); // AudioBufferSourceNodeをAnalyserNodeに接続
+      analyser.connect(audioCtx.destination); // AnalyserNodeをAudioDestinationNodeに接続
+
+      const fftSize = analyser.fftSize;
+      // const sampleRate = audioCtx.sampleRate;
+
+      const analyticSignal = new AnalyticSignal({
+        stageElm,
+        videoElm,
+        fftSize,
+        sampleRate,
+      });
+
+      const ticker = () => {
+        cnt++;
+
+        analyser.getFloatFrequencyData(frequencyData);
+        analyser.getFloatTimeDomainData(timeDomainData);
+
+        analyticSignal.draw({
+          frequencyData,
+          timeDomainData,
+        });
+
+        requestAnimationFrame(ticker);
+      };
+
       // 音源の再生を始める
       source.start();
+
+      ticker();
     });
   },
 };
